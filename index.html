@@ -21,15 +21,15 @@
       <p class="site-tagline">
         deep learning, bioinformatics &amp; web development 
         <span class="tagline-links">
-          <a href="https://github.com/xandykati98">github</a>
+          <a class="link-tooltip" href="https://github.com/xandykati98">github</a>
           <span class="pipe">|</span>
-          <a href="https://www.linkedin.com/in/xandykati98/">linkedin</a>
+          <a class="link-tooltip" href="https://www.linkedin.com/in/xandykati98/">linkedin</a>
           <span class="pipe">|</span>
-          <a href="https://x.com/xandykati98">X</a>
+          <a class="link-tooltip" href="https://x.com/xandykati98">X</a>
           <span class="pipe">|</span>
-          <a href="mailto:you@example.com">email</a>
+          <a class="link-tooltip" href="mailto:xandykati98@gmail.com">email</a>
           <span class="pipe">|</span>
-          <a href="./resume.pdf">resume</a>
+          <a class="link-tooltip" href="./resume.pdf">resume</a>
         </span>
       </p>
     </header>
@@ -38,24 +38,92 @@
       <div class="bio">
         <p>
           I build for the web and train models that learn. I care about the
-          intersection of good engineering and hard problems. Some projects:
+          intersection of good engineering, hard problems, and novel ideas. Some projects:
         </p>
         <ul class="project-list">
           <li>
-            <a href="https://github.com/xandykati98/SimpleCTM">SimpleCTM</a>
-            single-file PyTorch take on Sakana AI’s Continuous Thought Machines.
+            <div
+              class="tooltip-wrap"
+              data-tooltip="Here I learned a lot about research reproduction, PyTorch and it's quirks, and of course Continuous Thought Machines"
+            >
+              <a href="https://github.com/xandykati98/SimpleCTM">SimpleCTM</a>
+              single-file PyTorch take on Sakana AI’s Continuous Thought Machines.
+              <figure class="project-preview">
+                <img
+                  class="project-preview-img"
+                  src="./ctm.png"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption class="project-preview-caption">
+                  Here I learned a lot about research reproduction, PyTorch and it's quirks, and of course Continuous Thought Machines
+                </figcaption>
+              </figure>
+            </div>
           </li>
           <li>
-            <a href="https://github.com/xandykati98/opengenome-trm">opengenome-trm</a>
-            TRM on DNA for viral family classification (~1.1M params, 88.8% test accuracy).
+            <div
+              class="tooltip-wrap"
+              data-tooltip="Here I learned a lot about training on the cloud, interpretability and the power of latent reasoning"
+            >
+              <a href="https://github.com/xandykati98/perceiver">perceiver</a>
+              PyTorch take on DeepMind's Perceiver (General Perception with Iterative Attention, 2021).
+              <figure class="project-preview">
+                <img
+                  class="project-preview-img"
+                  src="./perceiver.png"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption class="project-preview-caption">
+                  Here I learned a lot about training on the cloud, interpretability and the power of latent reasoning
+                </figcaption>
+              </figure>
+            </div>
           </li>
           <li>
-            <a href="https://github.com/xandykati98/perceiver">perceiver</a>
-            PyTorch take on DeepMind's Perceiver (General Perception with Iterative Attention, 2021).
+            <div
+              class="tooltip-wrap"
+              data-tooltip="On this I had a lot of fun with Three.js and refreshed on the fundamentals of neural nets and JAX"
+            >
+              <a href="https://github.com/xandykati98/3d-mnist">3d-mnist</a>
+              real-time 3D dense-net MNIST visualizer; JAX, React, and Three.js.
+              <figure class="project-preview">
+                <img
+                  class="project-preview-img"
+                  src="./3dmnist.png"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption class="project-preview-caption">
+                  On this I had a lot of fun with Three.js and refreshed on the fundamentals of neural nets and JAX
+                </figcaption>
+              </figure>
+            </div>
           </li>
           <li>
-            <a href="https://github.com/xandykati98/3d-mnist">3d-mnist</a>
-            real-time 3D dense-net MNIST visualizer; JAX, React, and Three.js.
+            <div
+              class="tooltip-wrap"
+              data-tooltip="Here I worked on diabetic foot ulcer segmentation: an EfficientNet-B4 U-Net (Dice ~89%, IoU ~81%) and a verification classifier on RGB plus mask to filter false positives from skin lesions and other hard negatives"
+            >
+              <a href="https://github.com/Nucleo-IA-Unilasalle/dfu-segmentation-net">dfu-segmentation-net</a>
+              DFU binary segmentation (EfficientNet-B4 U-Net) with a secondary verifier to cut false positives.
+              <figure class="project-preview">
+                <img
+                  class="project-preview-img"
+                  src="./dfu.png"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption class="project-preview-caption">
+                  Here I worked on diabetic foot ulcer segmentation: an EfficientNet-B4 U-Net (Dice ~89%, IoU ~81%) and a verification classifier on RGB plus mask to filter false positives from skin lesions and other hard negatives
+                </figcaption>
+              </figure>
+            </div>
           </li>
           <li>
             PDPpredict; predict immunogenic response of pMHC complexes from PDB

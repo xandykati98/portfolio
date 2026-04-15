@@ -101,6 +101,102 @@ a:hover {
   color: var(--link-hover);
 }
 
+/* Hover / focus tooltip — square corners, thin black border, mock copy for now */
+a.link-tooltip,
+.tooltip-wrap {
+  position: relative;
+  z-index: 0;
+}
+
+.tooltip-wrap {
+  display: block;
+  max-width: 100%;
+}
+
+a.link-tooltip:hover,
+a.link-tooltip:focus-visible,
+.tooltip-wrap:hover,
+.tooltip-wrap:focus-within {
+  z-index: 3;
+}
+
+a.link-tooltip::after,
+.tooltip-wrap::after {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 0.35rem);
+  bottom: auto;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(14rem, calc(100vw - 2 * var(--pad)));
+  padding: 0.5rem 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--fg);
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 0;
+  box-shadow: none;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s ease, visibility 0.12s ease;
+}
+
+a.link-tooltip::after {
+  content: "Mock tooltip: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Replace with real copy.";
+}
+
+a.link-tooltip[data-tooltip]::after,
+.tooltip-wrap::after {
+  content: attr(data-tooltip);
+}
+
+a.link-tooltip:hover::after,
+a.link-tooltip:focus-visible::after,
+.tooltip-wrap:hover::after,
+.tooltip-wrap:focus-within::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.link-tooltip::after,
+  .tooltip-wrap::after {
+    transition: none;
+  }
+}
+
+/* Inline project screenshot below link (SimpleCTM, 3d-mnist, …) */
+figure.project-preview {
+  margin: 0.75rem 0 0;
+  max-width: min(34rem, 100%);
+  padding: 0.45rem;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 0;
+}
+
+.project-preview-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 26rem;
+  object-fit: contain;
+  object-position: top center;
+}
+
+.project-preview-caption {
+  margin: 0.45rem 0 0;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--fg);
+}
+
 .site-main {
   padding-bottom: 2rem;
 }
