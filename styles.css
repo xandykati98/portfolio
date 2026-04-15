@@ -101,27 +101,21 @@ a:hover {
   color: var(--link-hover);
 }
 
-/* Hover / focus tooltip — square corners, thin black border, mock copy for now */
-a.link-tooltip,
+/* Tooltip only when data-tooltip is set (e.g. .tooltip-wrap[data-tooltip]) */
 .tooltip-wrap {
   position: relative;
   z-index: 0;
-}
-
-.tooltip-wrap {
   display: block;
   max-width: 100%;
 }
 
-a.link-tooltip:hover,
-a.link-tooltip:focus-visible,
 .tooltip-wrap:hover,
 .tooltip-wrap:focus-within {
   z-index: 3;
 }
 
-a.link-tooltip::after,
-.tooltip-wrap::after {
+.tooltip-wrap[data-tooltip]::after {
+  content: attr(data-tooltip);
   position: absolute;
   left: 50%;
   top: calc(100% + 0.35rem);
@@ -145,26 +139,14 @@ a.link-tooltip::after,
   transition: opacity 0.12s ease, visibility 0.12s ease;
 }
 
-a.link-tooltip::after {
-  content: "Mock tooltip: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Replace with real copy.";
-}
-
-a.link-tooltip[data-tooltip]::after,
-.tooltip-wrap::after {
-  content: attr(data-tooltip);
-}
-
-a.link-tooltip:hover::after,
-a.link-tooltip:focus-visible::after,
-.tooltip-wrap:hover::after,
-.tooltip-wrap:focus-within::after {
+.tooltip-wrap[data-tooltip]:hover::after,
+.tooltip-wrap[data-tooltip]:focus-within::after {
   opacity: 1;
   visibility: visible;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  a.link-tooltip::after,
-  .tooltip-wrap::after {
+  .tooltip-wrap[data-tooltip]::after {
     transition: none;
   }
 }
