@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="xandykati98 — personal site" />
+    <title>xandykati98</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <h1 class="site-title">xandykati98</h1>
+      <p class="site-tagline">
+        deep learning, bioinformatics &amp; web development 
+        <span class="tagline-links">
+          <a href="https://github.com/xandykati98">github</a>
+          <span class="pipe">|</span>
+          <a href="https://www.linkedin.com/in/xandykati98/">linkedin</a>
+          <span class="pipe">|</span>
+          <a href="https://x.com/xandykati98">X</a>
+          <span class="pipe">|</span>
+          <a href="mailto:you@example.com">email</a>
+          <span class="pipe">|</span>
+          <a href="./resume.pdf">resume</a>
+        </span>
+      </p>
+    </header>
+
+    <main id="main" class="site-main">
+      <div class="bio">
+        <p>
+          I build for the web and train models that learn. I care about the
+          intersection of good engineering and hard problems. Some projects:
+        </p>
+        <ul class="project-list">
+          <li>
+            <a href="https://github.com/xandykati98/SimpleCTM">SimpleCTM</a>
+            single-file PyTorch take on Sakana AI’s Continuous Thought Machines.
+          </li>
+          <li>
+            <a href="https://github.com/xandykati98/opengenome-trm">opengenome-trm</a>
+            TRM on DNA for viral family classification (~1.1M params, 88.8% test accuracy).
+          </li>
+          <li>
+            PDPpredict; predict immunogenic response of pMHC complexes from PDB
+            structural data and electrostatics.
+          </li>
+          <li>
+            py-docktope; DockTope-style pMHC pipeline (D1–EM–D2) in typed
+            stages; <code>main.py</code> orchestrates PyMOL, GROMACS, Gnina, and
+            packaging.
+          </li>
+        </ul>
+      </div>
+
+      <section class="dna-block" aria-label="DNA sequences">
+        <div class="dna-rows" id="dna-rows"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        last updated <time datetime="2026-04-07">2026/04</time>
+      </p>
+    </footer>
+
+    <script>
+      (function () {
+        var SEQUENCES = [
+          "GCTACGACACGAACGATCTCGATACTATTCCGGCTGCATCAATCGAATCATTTGCCGGTGTGGGCTACTTCTTCGATCTCGCCGGTATAAAAGAAGGCG",
+          "TTAATCATCGGTGCAGCCACAAATAATTCAACCGGCAACGGAATGTCAGATTCCGGAATCGCTCTCATGTCAGGCCACTCACCCTCATATATAGATATT",
+          "GCTCATTTAAAAACACTTGACGTGTTTACTTGATGTTTGTTGTGTCATCTTCACTGTAATTGTTCGAGTACTTATTTCCTCAAAAAAATTACGGGTTCT",
+          "CAATGTGTTCGAGGACTGCTGTGCCGATCCGTATGATCCGAACGTGGCAAGCGTACAGCATGACATCGCGCTGCGCAACTGTGACGACGTGGAGATCCG",
+          "GTACCGTCCCAGGCGCTGACCGTCTCTGGCTAATGTCTTGGCGCCGTGCATGGAGCTTTCCTCGTCGGCGGTGGCGAGGATGGTCAGTGGTTGCTTGAG",
+          "AACAACACCAGAAGAAATAGCAAACGTAGTATACGCATTCACACACCTAATGACCCCTGTAACAGGCCAATACCTAGCAGCAGACTGCGGACAAACAAT",
+          "ATCATTTATTGTACAGGCAATTTCTAAAGTAAACAATGGCTATCCGGTTTCCGGGATTTATACCTTTGGGTGTCCAGAAACCGGGATTTAAACCTTTGC",
+          "CTGGGCGTGGTCAAGGGCGCGGTTGATACCGGCGCCATGATCAGGGGGATGTGATGCAGGCGCTCAAGCACATGGAAGCACCGTTGGCGGCGCGTCCGC",
+          "CCTCATCAAGCCACCTCCAGCCGCTTTTCCCCCTCCTATATCGGATTTAAGGTCCACCTCATGTGCCCGCATTCTCGATGTCAGCAAGTGTATAGGGAC",
+          "CGTCCAGCGCGCGCCGGGTCTGCAGCGTCAGTGCCCGAAAAGCCCGCCGCCGGTTGTCGAAGGCCTGGTATTCGGCGCGCACCGCTTCATCGGCCTGGG",
+        ];
+        var PREFIX_LEN = 10;
+        var NUC = ["A", "C", "G", "T"];
+        var BASE_DELAY_MS = 350;
+        var LINE_STAGGER_MS = 450;
+        var COL_STAGGER_MS = 32;
+        var TICK_MS = 48;
+
+        function buildRows(container) {
+          var frag = document.createDocumentFragment();
+          for (var lineIdx = 0; lineIdx < SEQUENCES.length; lineIdx++) {
+            var seq = SEQUENCES[lineIdx];
+            var row = document.createElement("div");
+            row.className = "dna-row";
+            var prefix = document.createElement("span");
+            prefix.className = "dna-prefix";
+            prefix.textContent = seq.slice(0, PREFIX_LEN);
+            row.appendChild(prefix);
+            var rest = seq.slice(PREFIX_LEN);
+            for (var i = 0; i < rest.length; i++) {
+              var cell = document.createElement("span");
+              cell.className = "dna-cell";
+              cell.textContent = "?";
+              cell.setAttribute("data-target", rest.charAt(i));
+              row.appendChild(cell);
+            }
+            frag.appendChild(row);
+          }
+          container.appendChild(frag);
+        }
+
+        function revealAllCells() {
+          var cells = document.querySelectorAll(".dna-cell");
+          for (var i = 0; i < cells.length; i++) {
+            var el = cells[i];
+            var t = el.getAttribute("data-target");
+            if (t) {
+              el.textContent = t;
+            }
+            el.classList.add("dna-done");
+          }
+        }
+
+        function scheduleDecode() {
+          var cells = document.querySelectorAll(".dna-cell");
+          var rowIndex = 0;
+          var colInRow = 0;
+          var currentLineLen = SEQUENCES[0].length - PREFIX_LEN;
+
+          for (var idx = 0; idx < cells.length; idx++) {
+            var cell = cells[idx];
+            var target = cell.getAttribute("data-target");
+            if (!target) {
+              continue;
+            }
+            var delay =
+              BASE_DELAY_MS +
+              rowIndex * LINE_STAGGER_MS +
+              colInRow * COL_STAGGER_MS;
+            colInRow += 1;
+            if (colInRow >= currentLineLen) {
+              colInRow = 0;
+              rowIndex += 1;
+              if (rowIndex < SEQUENCES.length) {
+                currentLineLen = SEQUENCES[rowIndex].length - PREFIX_LEN;
+              }
+            }
+            (function (element, finalChar, startAt) {
+              window.setTimeout(function () {
+                var duration = 320 + Math.floor(Math.random() * 220);
+                var elapsed = 0;
+                element.classList.add("dna-decoding");
+                var intervalId = window.setInterval(function () {
+                  elapsed += TICK_MS;
+                  if (elapsed < duration) {
+                    element.textContent =
+                      NUC[Math.floor(Math.random() * NUC.length)];
+                  } else {
+                    window.clearInterval(intervalId);
+                    element.textContent = finalChar;
+                    element.classList.remove("dna-decoding");
+                    element.classList.add("dna-done");
+                  }
+                }, TICK_MS);
+              }, startAt);
+            })(cell, target, delay);
+          }
+        }
+
+        function init() {
+          var container = document.getElementById("dna-rows");
+          if (!container) {
+            return;
+          }
+          buildRows(container);
+          var reduced =
+            window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (reduced) {
+            revealAllCells();
+            return;
+          }
+          scheduleDecode();
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", init);
+        } else {
+          init();
+        }
+      })();
+    </script>
+  </body>
+</html>

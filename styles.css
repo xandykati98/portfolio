@@ -1,0 +1,179 @@
+/* Minimal personal site — inspired by small monospace portfolios */
+
+:root {
+  --bg: #faf9f7;
+  --fg: #1a1a1a;
+  --muted: #5c5c5c;
+  --link: #0b57d0;
+  --link-hover: #0842a0;
+  --border: #e0ddd8;
+  --font: "IBM Plex Mono", "SF Mono", "Consolas", "Liberation Mono", monospace;
+  --max-width: 42rem;
+  --pad: 1.25rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--fg);
+  background-color: var(--bg);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 0.5rem 1rem;
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.skip-link:focus {
+  left: var(--pad);
+  top: var(--pad);
+}
+
+.site-header,
+.site-main,
+.site-footer {
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--pad);
+  padding-right: var(--pad);
+}
+
+.site-header {
+  padding-top: 2.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.site-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.site-tagline {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.site-tagline .sep {
+  margin: 0 0.15em;
+}
+
+.tagline-links {
+  display: block;
+  margin-top: 0.35rem;
+}
+
+.tagline-links .pipe {
+  margin: 0 0.35rem;
+  color: var(--border);
+  user-select: none;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+.site-main {
+  padding-bottom: 2rem;
+}
+
+.bio p {
+  margin: 0 0 1rem;
+}
+
+.bio code {
+  font-family: inherit;
+  font-size: 0.92em;
+  padding: 0.05em 0.3em;
+  background: color-mix(in srgb, var(--fg) 6%, transparent);
+  border-radius: 3px;
+}
+
+.project-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.project-list li {
+  margin-bottom: 0.35rem;
+}
+
+.project-list li::marker {
+  color: var(--muted);
+}
+
+.site-footer {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+/* DNA sequence strip — prefix visible, rest decodes from ? */
+.dna-block {
+  margin-top: 2.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.dna-rows {
+  font-size: 0.6875rem;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.dna-row {
+  margin: 0 0 0.45rem;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.dna-prefix {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.dna-cell {
+  display: inline;
+}
+
+.dna-cell.dna-decoding {
+  color: color-mix(in srgb, var(--link) 55%, var(--muted));
+}
+
+.dna-cell.dna-done {
+  color: var(--muted);
+}
