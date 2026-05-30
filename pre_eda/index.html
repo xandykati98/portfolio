@@ -135,6 +135,31 @@
           }
         }
 
+        function enhanceOverviewTable(root) {
+          var overviewHeading = null;
+          var headings = root.querySelectorAll("h2");
+          for (var i = 0; i < headings.length; i++) {
+            if (headings[i].textContent.trim() === "Overview") {
+              overviewHeading = headings[i];
+              break;
+            }
+          }
+          if (!overviewHeading) {
+            return;
+          }
+          var node = overviewHeading.nextElementSibling;
+          while (node && node.tagName !== "TABLE") {
+            node = node.nextElementSibling;
+          }
+          if (!node || node.parentElement.classList.contains("overview-table-scroll")) {
+            return;
+          }
+          var wrapper = document.createElement("div");
+          wrapper.className = "overview-table-scroll";
+          node.parentNode.insertBefore(wrapper, node);
+          wrapper.appendChild(node);
+        }
+
         function showError(root, message) {
           root.innerHTML =
             '<p class="page-nav"><a href="../index.html">← home</a></p>' +
@@ -163,6 +188,7 @@
                 '<p class="page-nav"><a href="../index.html">← home</a></p>' +
                 renderMarkdown(rewriteImagePaths(markdown));
               root.innerHTML = html;
+              enhanceOverviewTable(root);
               enhanceColumnHovers(root);
               enhancePlotImages(root);
             })

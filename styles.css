@@ -265,6 +265,21 @@ figure.project-preview {
   line-height: 1.45;
 }
 
+@media (max-width: 640px) {
+  .markdown-body .overview-table-scroll {
+    max-width: 90vw;
+    overflow-x: auto;
+    margin: 0 0 1.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .markdown-body .overview-table-scroll table {
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+  }
+}
+
 .markdown-body th,
 .markdown-body td {
   padding: 0.35rem 0.5rem;
