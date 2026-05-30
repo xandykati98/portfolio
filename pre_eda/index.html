@@ -39,6 +39,10 @@
       </p>
     </footer>
 
+    <dialog id="plot-lightbox" class="plot-lightbox" aria-label="Expanded plot">
+      <img class="plot-lightbox__img" alt="" decoding="async" />
+    </dialog>
+
     <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
     <script>
       (function () {
@@ -56,6 +60,79 @@
             breaks: false,
           });
           return marked.parse(markdown);
+        }
+
+        function enhanceColumnHovers(root) {
+          var triggers = root.querySelectorAll(".columns-more");
+          for (var i = 0; i < triggers.length; i++) {
+            var listItem = triggers[i].closest("li");
+            if (listItem) {
+              listItem.classList.add("columns-item");
+            }
+          }
+        }
+
+        function enhancePlotImages(root) {
+          var lightbox = document.getElementById("plot-lightbox");
+          if (!lightbox) {
+            return;
+          }
+          var lightboxImage = lightbox.querySelector(".plot-lightbox__img");
+          if (!lightboxImage) {
+            return;
+          }
+
+          function openLightbox(sourceImage) {
+            lightboxImage.src = sourceImage.currentSrc || sourceImage.src;
+            lightboxImage.alt = sourceImage.alt || "Expanded plot";
+            if (typeof lightbox.showModal === "function") {
+              lightbox.showModal();
+            }
+          }
+
+          function closeLightbox() {
+            if (!lightbox.open) {
+              return;
+            }
+            lightbox.close();
+            lightboxImage.removeAttribute("src");
+            lightboxImage.alt = "";
+          }
+
+          if (!lightbox.dataset.bound) {
+            lightbox.dataset.bound = "true";
+            lightbox.addEventListener("click", function (event) {
+              if (event.target === lightbox) {
+                closeLightbox();
+              }
+            });
+            lightboxImage.addEventListener("click", function () {
+              closeLightbox();
+            });
+            lightbox.addEventListener("close", function () {
+              lightboxImage.removeAttribute("src");
+              lightboxImage.alt = "";
+            });
+          }
+
+          var images = root.querySelectorAll("img");
+          for (var i = 0; i < images.length; i++) {
+            var image = images[i];
+            if (image.classList.contains("plot-lightbox__img")) {
+              continue;
+            }
+            image.tabIndex = 0;
+            image.addEventListener("click", function (event) {
+              openLightbox(event.currentTarget);
+            });
+            image.addEventListener("keydown", function (event) {
+              if (event.key !== "Enter" && event.key !== " ") {
+                return;
+              }
+              event.preventDefault();
+              openLightbox(event.currentTarget);
+            });
+          }
         }
 
         function showError(root, message) {
@@ -86,6 +163,8 @@
                 '<p class="page-nav"><a href="../index.html">← home</a></p>' +
                 renderMarkdown(rewriteImagePaths(markdown));
               root.innerHTML = html;
+              enhanceColumnHovers(root);
+              enhancePlotImages(root);
             })
             .catch(function (error) {
               showError(

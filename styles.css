@@ -287,6 +287,47 @@ figure.project-preview {
   padding: 0.45rem;
   background-color: #fff;
   border: 1px solid #000;
+  cursor: zoom-in;
+}
+
+.plot-lightbox {
+  border: none;
+  padding: 1.25rem;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  background: transparent;
+}
+
+.plot-lightbox::backdrop {
+  background: color-mix(in srgb, var(--fg) 30%, transparent);
+}
+
+.plot-lightbox__img {
+  display: block;
+  width: 90vw;
+  max-width: 90vw;
+  max-height: 90vh;
+  height: auto;
+  margin: auto;
+  padding: 0.45rem;
+  object-fit: contain;
+  object-position: center;
+  background-color: #fff;
+  border: 1px solid #000;
+  cursor: zoom-out;
+}
+
+.plot-lightbox:not([open]) {
+  display: none;
+}
+
+.plot-lightbox[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .markdown-body .page-nav {
@@ -305,4 +346,70 @@ figure.project-preview {
 
 .markdown-body .markdown-error {
   color: #8b1a1a;
+}
+
+.markdown-body li.columns-item {
+  cursor: help;
+}
+
+.markdown-body .columns-more {
+  cursor: help;
+  color: var(--muted);
+  border-bottom: 1px dotted var(--border);
+}
+
+.markdown-body li.columns-item .columns-rest {
+  display: none;
+}
+
+.markdown-body li.columns-item:hover .columns-ellipsis,
+.markdown-body li.columns-item:focus-within .columns-ellipsis {
+  display: none;
+}
+
+.markdown-body li.columns-item:hover .columns-rest,
+.markdown-body li.columns-item:focus-within .columns-rest {
+  display: inline;
+}
+
+.markdown-body .plot-caption,
+.markdown-body em {
+  display: block;
+  margin: -0.5rem 0 1rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.markdown-body .plot-tip {
+  position: relative;
+  display: inline;
+  cursor: help;
+  font-style: italic;
+  color: var(--fg);
+  border-bottom: 1px dotted var(--border);
+}
+
+.markdown-body .plot-tip__popup {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  bottom: calc(100% + 0.35rem);
+  display: none;
+  width: max-content;
+  max-width: min(18rem, 85vw);
+  padding: 0.45rem 0.55rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--fg) 12%, transparent);
+}
+
+.markdown-body .plot-tip:hover .plot-tip__popup,
+.markdown-body .plot-tip:focus .plot-tip__popup,
+.markdown-body .plot-tip:focus-within .plot-tip__popup {
+  display: block;
 }

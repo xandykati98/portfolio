@@ -27,7 +27,8 @@
     "date_max": "2026-03-08",
     "municipalities": 5570,
     "file_size_mb": 39.54,
-    "plot_file": "data_imdc_2026/pre_eda/plots/dengue.png",
+    "plot_file": "plots/dengue.png",
+    "plot_caption": "National weekly total of probable dengue cases, summed across all municipalities.",
     "notes": "Includes train/target flags for four validation seasons and target_city marker."
   },
   {
@@ -58,7 +59,8 @@
     "date_max": "2026-03-08",
     "municipalities": 5570,
     "file_size_mb": 28.79,
-    "plot_file": "data_imdc_2026/pre_eda/plots/chikungunya.png",
+    "plot_file": "plots/chikungunya.png",
+    "plot_caption": "National weekly total of probable chikungunya cases, summed across all municipalities.",
     "notes": "Same schema as dengue; period starts in 2014."
   },
   {
@@ -88,7 +90,8 @@
     "date_max": "2026-03-15",
     "municipalities": 5567,
     "file_size_mb": 1675.65,
-    "plot_file": "data_imdc_2026/pre_eda/plots/climate.png",
+    "plot_file": "plots/climate.png",
+    "plot_caption": "National weekly averages of mean temperature (\u00b0C), precipitation (mm/h), and relative humidity (%), aggregated from ERA5 reanalysis per municipality.",
     "notes": "Temperature, precipitation, humidity, pressure, thermal range, rainy days."
   },
   {
@@ -107,7 +110,8 @@
     "date_max": "2026-03-01",
     "municipalities": 5570,
     "file_size_mb": 415.55,
-    "plot_file": "data_imdc_2026/pre_eda/plots/forecasting_climate.png",
+    "plot_file": "plots/forecasting_climate.png",
+    "plot_caption": "Left: mean forecast temperature by months-ahead horizon. Right: mean forecast temperature by reference month, averaged across municipalities.",
     "notes": "One row per municipality, reference month, and forecast horizon."
   },
   {
@@ -123,7 +127,8 @@
     "date_max": "2025",
     "municipalities": 5571,
     "file_size_mb": 2.6,
-    "plot_file": "data_imdc_2026/pre_eda/plots/datasus_population_2001_2025.png",
+    "plot_file": "plots/datasus_population_2001_2025.png",
+    "plot_caption": "National population total by year (millions), summed from DATASUS municipality estimates.",
     "notes": "Long format: geocode \u00d7 year."
   },
   {
@@ -140,7 +145,8 @@
     "date_max": null,
     "municipalities": 5570,
     "file_size_mb": 0.15,
-    "plot_file": "data_imdc_2026/pre_eda/plots/environ_vars.png",
+    "plot_file": "plots/environ_vars.png",
+    "plot_caption": "Left: top 10 K\u00f6ppen climate types by municipality count. Right: biome distribution across municipalities.",
     "notes": "One row per municipality; no time dimension."
   },
   {
@@ -157,7 +163,8 @@
     "date_max": "2026-03-10",
     "municipalities": null,
     "file_size_mb": 0.07,
-    "plot_file": "data_imdc_2026/pre_eda/plots/ocean_climate_oscillations.png",
+    "plot_file": "plots/ocean_climate_oscillations.png",
+    "plot_caption": "Weekly ENSO, IOD, and PDO ocean\u2013atmosphere oscillation indices; dashed line at zero.",
     "notes": "National/global indices; join to case data by week."
   },
   {
@@ -181,7 +188,8 @@
     "date_max": null,
     "municipalities": 5570,
     "file_size_mb": 0.5,
-    "plot_file": "data_imdc_2026/pre_eda/plots/map_regional_health.png",
+    "plot_file": "plots/map_regional_health.png",
+    "plot_caption": "Number of municipalities per Brazilian state (UF) in the health-region lookup table.",
     "notes": "Use with shapefiles for spatial aggregation."
   },
   {
@@ -199,7 +207,8 @@
     "date_max": null,
     "municipalities": 5570,
     "file_size_mb": 24.09,
-    "plot_file": "data_imdc_2026/pre_eda/plots/shape_muni.png",
+    "plot_file": "plots/shape_muni.png",
+    "plot_caption": "Map of IBGE municipality polygon boundaries across Brazil.",
     "notes": "Geometry layer for choropleth maps."
   },
   {
@@ -216,7 +225,8 @@
     "date_max": null,
     "municipalities": null,
     "file_size_mb": 29.14,
-    "plot_file": "data_imdc_2026/pre_eda/plots/shape_regional_health.png",
+    "plot_file": "plots/shape_regional_health.png",
+    "plot_caption": "Map of DATASUS regional health division polygons.",
     "notes": "Matches regional_geocode in case tables."
   },
   {
@@ -233,7 +243,8 @@
     "date_max": null,
     "municipalities": null,
     "file_size_mb": 44.02,
-    "plot_file": "data_imdc_2026/pre_eda/plots/shape_macroregional_health.png",
+    "plot_file": "plots/shape_macroregional_health.png",
+    "plot_caption": "Map of DATASUS macroregional health division polygons.",
     "notes": "Matches macroregional_geocode in case tables."
   }
 ]

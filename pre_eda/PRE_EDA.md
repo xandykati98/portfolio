@@ -1,6 +1,6 @@
 # Pre-EDA — `data_imdc_2026`
 
-Auto-generated overview of IMDC 2026 datasets. Generated at **2026-05-30 00:16 UTC**.
+Auto-generated overview of IMDC 2026 datasets. Generated at **2026-05-30 00:31 UTC**.
 
 Plots were built with `uv run python scripts/generate_pre_eda.py`.
 
@@ -26,28 +26,34 @@ Plots were built with `uv run python scripts/generate_pre_eda.py`.
 
 Weekly probable dengue cases by municipality (SINAN / Infodengue).
 
-- **Columns:** `geocode`, `date`, `casos`, `epiweek`, `uf`, `macroregional_geocode`, `regional_geocode`, `uf_code`, … (+10 more)
+- **Columns:** `geocode`, `date`, `casos`, `epiweek`, `uf`, `macroregional_geocode`, `regional_geocode`, `uf_code`, <span class="columns-more" tabindex="0"><span class="columns-ellipsis">… (+10 more)</span><span class="columns-rest"><code>target_city</code>, <code>train_1</code>, <code>target_1</code>, <code>train_2</code>, <code>target_2</code>, <code>train_3</code>, <code>target_3</code>, <code>train_4</code>, <code>target_4</code>, <code>disease</code></span></span>
 - **Notes:** Includes train/target flags for four validation seasons and target_city marker.
 
 ![dengue.csv.gz](plots/dengue.png)
+
+*National weekly total of probable dengue cases, summed across all municipalities.*
 
 ### `chikungunya.csv.gz`
 
 Weekly probable chikungunya cases by municipality.
 
-- **Columns:** `geocode`, `date`, `casos`, `epiweek`, `uf`, `macroregional_geocode`, `regional_geocode`, `uf_code`, … (+10 more)
+- **Columns:** `geocode`, `date`, `casos`, `epiweek`, `uf`, `macroregional_geocode`, `regional_geocode`, `uf_code`, <span class="columns-more" tabindex="0"><span class="columns-ellipsis">… (+10 more)</span><span class="columns-rest"><code>target_city</code>, <code>train_1</code>, <code>target_1</code>, <code>train_2</code>, <code>target_2</code>, <code>train_3</code>, <code>target_3</code>, <code>train_4</code>, <code>target_4</code>, <code>disease</code></span></span>
 - **Notes:** Same schema as dengue; period starts in 2014.
 
 ![chikungunya.csv.gz](plots/chikungunya.png)
+
+*National weekly total of probable chikungunya cases, summed across all municipalities.*
 
 ### `climate.csv`
 
 ERA5 climate reanalysis aggregated to epidemiological weeks per municipality.
 
-- **Columns:** `date`, `epiweek`, `geocode`, `temp_min`, `temp_med`, `temp_max`, `precip_min`, `precip_med`, … (+9 more)
+- **Columns:** `date`, `epiweek`, `geocode`, `temp_min`, `temp_med`, `temp_max`, `precip_min`, `precip_med`, <span class="columns-more" tabindex="0"><span class="columns-ellipsis">… (+9 more)</span><span class="columns-rest"><code>precip_max</code>, <code>pressure_min</code>, <code>pressure_med</code>, <code>pressure_max</code>, <code>rel_humid_min</code>, <code>rel_humid_med</code>, <code>rel_humid_max</code>, <code>thermal_range</code>, <code>rainy_days</code></span></span>
 - **Notes:** Temperature, precipitation, humidity, pressure, thermal range, rainy days.
 
 ![climate.csv](plots/climate.png)
+
+*National weekly averages of mean temperature (°C), precipitation (mm/h), and relative humidity (%), aggregated from ERA5 reanalysis per municipality.*
 
 ### `forecasting_climate.csv`
 
@@ -58,6 +64,8 @@ Copernicus seasonal climate forecasts up to six months ahead.
 
 ![forecasting_climate.csv](plots/forecasting_climate.png)
 
+<p class="plot-caption">Left: <span class="plot-tip" tabindex="0">national mean<span class="plot-tip__popup">Average across all municipalities for each reference month and horizon.</span></span> forecast temperature by <span class="plot-tip" tabindex="0">reference month<span class="plot-tip__popup">The month the forecast was issued; shown on the x-axis of the left plot.</span></span>, one line per <span class="plot-tip" tabindex="0">forecast horizon<span class="plot-tip__popup">How many months ahead the forecast targets; legend labels 1 mo–6 mo.</span></span> (1–6 months ahead). Right: national mean 1-month-ahead total precipitation by reference month.</p>
+
 ### `datasus_population_2001_2025.csv`
 
 Municipality population estimates from DATASUS (2001–2025).
@@ -66,6 +74,8 @@ Municipality population estimates from DATASUS (2001–2025).
 - **Notes:** Long format: geocode × year.
 
 ![datasus_population_2001_2025.csv](plots/datasus_population_2001_2025.png)
+
+*National population total by year (millions), summed from DATASUS municipality estimates.*
 
 ### `environ_vars.csv`
 
@@ -76,6 +86,8 @@ Static environmental descriptors per municipality (Köppen climate, biome).
 
 ![environ_vars.csv](plots/environ_vars.png)
 
+*Left: top 10 Köppen climate types by municipality count. Right: biome distribution across municipalities.*
+
 ### `ocean_climate_oscillations.csv`
 
 Weekly ocean-atmosphere oscillation indices (ENSO, IOD, PDO).
@@ -85,14 +97,18 @@ Weekly ocean-atmosphere oscillation indices (ENSO, IOD, PDO).
 
 ![ocean_climate_oscillations.csv](plots/ocean_climate_oscillations.png)
 
+*Weekly ENSO, IOD, and PDO ocean–atmosphere oscillation indices; dashed line at zero.*
+
 ### `map_regional_health.csv`
 
 Lookup table linking municipalities to health regions and macroregions.
 
-- **Columns:** `macroregion_code`, `macroregion_name`, `uf_code`, `uf`, `uf_name`, `macroregional_geocode`, `macroregional_name`, `regional_geocode`, … (+3 more)
+- **Columns:** `macroregion_code`, `macroregion_name`, `uf_code`, `uf`, `uf_name`, `macroregional_geocode`, `macroregional_name`, `regional_geocode`, <span class="columns-more" tabindex="0"><span class="columns-ellipsis">… (+3 more)</span><span class="columns-rest"><code>regional_name</code>, <code>geocode</code>, <code>geocode_name</code></span></span>
 - **Notes:** Use with shapefiles for spatial aggregation.
 
 ![map_regional_health.csv](plots/map_regional_health.png)
+
+*Number of municipalities per Brazilian state (UF) in the health-region lookup table.*
 
 ### `shape_muni.gpkg`
 
@@ -103,6 +119,8 @@ GeoPackage with municipality polygons and names.
 
 ![shape_muni.gpkg](plots/shape_muni.png)
 
+*Map of IBGE municipality polygon boundaries across Brazil.*
+
 ### `shape_regional_health.gpkg`
 
 GeoPackage with regional health division polygons.
@@ -112,6 +130,8 @@ GeoPackage with regional health division polygons.
 
 ![shape_regional_health.gpkg](plots/shape_regional_health.png)
 
+*Map of DATASUS regional health division polygons.*
+
 ### `shape_macroregional_health.gpkg`
 
 GeoPackage with macroregional health division polygons.
@@ -120,6 +140,8 @@ GeoPackage with macroregional health division polygons.
 - **Notes:** Matches macroregional_geocode in case tables.
 
 ![shape_macroregional_health.gpkg](plots/shape_macroregional_health.png)
+
+*Map of DATASUS macroregional health division polygons.*
 
 ## Compressed copies
 
