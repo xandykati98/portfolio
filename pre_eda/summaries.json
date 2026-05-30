@@ -1,0 +1,239 @@
+[
+  {
+    "filename": "dengue.csv.gz",
+    "description": "Weekly probable dengue cases by municipality (SINAN / Infodengue).",
+    "rows": 4706650,
+    "columns": [
+      "geocode",
+      "date",
+      "casos",
+      "epiweek",
+      "uf",
+      "macroregional_geocode",
+      "regional_geocode",
+      "uf_code",
+      "target_city",
+      "train_1",
+      "target_1",
+      "train_2",
+      "target_2",
+      "train_3",
+      "target_3",
+      "train_4",
+      "target_4",
+      "disease"
+    ],
+    "date_min": "2010-01-03",
+    "date_max": "2026-03-08",
+    "municipalities": 5570,
+    "file_size_mb": 39.54,
+    "plot_file": "data_imdc_2026/pre_eda/plots/dengue.png",
+    "notes": "Includes train/target flags for four validation seasons and target_city marker."
+  },
+  {
+    "filename": "chikungunya.csv.gz",
+    "description": "Weekly probable chikungunya cases by municipality.",
+    "rows": 3548090,
+    "columns": [
+      "geocode",
+      "date",
+      "casos",
+      "epiweek",
+      "uf",
+      "macroregional_geocode",
+      "regional_geocode",
+      "uf_code",
+      "target_city",
+      "train_1",
+      "target_1",
+      "train_2",
+      "target_2",
+      "train_3",
+      "target_3",
+      "train_4",
+      "target_4",
+      "disease"
+    ],
+    "date_min": "2013-12-29",
+    "date_max": "2026-03-08",
+    "municipalities": 5570,
+    "file_size_mb": 28.79,
+    "plot_file": "data_imdc_2026/pre_eda/plots/chikungunya.png",
+    "notes": "Same schema as dengue; period starts in 2014."
+  },
+  {
+    "filename": "climate.csv",
+    "description": "ERA5 climate reanalysis aggregated to epidemiological weeks per municipality.",
+    "rows": 7621223,
+    "columns": [
+      "date",
+      "epiweek",
+      "geocode",
+      "temp_min",
+      "temp_med",
+      "temp_max",
+      "precip_min",
+      "precip_med",
+      "precip_max",
+      "pressure_min",
+      "pressure_med",
+      "pressure_max",
+      "rel_humid_min",
+      "rel_humid_med",
+      "rel_humid_max",
+      "thermal_range",
+      "rainy_days"
+    ],
+    "date_min": "1999-12-26",
+    "date_max": "2026-03-15",
+    "municipalities": 5567,
+    "file_size_mb": 1675.65,
+    "plot_file": "data_imdc_2026/pre_eda/plots/climate.png",
+    "notes": "Temperature, precipitation, humidity, pressure, thermal range, rainy days."
+  },
+  {
+    "filename": "forecasting_climate.csv",
+    "description": "Copernicus seasonal climate forecasts up to six months ahead.",
+    "rows": 6516900,
+    "columns": [
+      "geocode",
+      "reference_month",
+      "forecast_months_ahead",
+      "temp_med",
+      "umid_med",
+      "precip_tot"
+    ],
+    "date_min": "2010-01-01",
+    "date_max": "2026-03-01",
+    "municipalities": 5570,
+    "file_size_mb": 415.55,
+    "plot_file": "data_imdc_2026/pre_eda/plots/forecasting_climate.png",
+    "notes": "One row per municipality, reference month, and forecast horizon."
+  },
+  {
+    "filename": "datasus_population_2001_2025.csv",
+    "description": "Municipality population estimates from DATASUS (2001\u20132025).",
+    "rows": 139251,
+    "columns": [
+      "geocode",
+      "year",
+      "population"
+    ],
+    "date_min": "2001",
+    "date_max": "2025",
+    "municipalities": 5571,
+    "file_size_mb": 2.6,
+    "plot_file": "data_imdc_2026/pre_eda/plots/datasus_population_2001_2025.png",
+    "notes": "Long format: geocode \u00d7 year."
+  },
+  {
+    "filename": "environ_vars.csv",
+    "description": "Static environmental descriptors per municipality (K\u00f6ppen climate, biome).",
+    "rows": 5570,
+    "columns": [
+      "geocode",
+      "uf_code",
+      "koppen",
+      "biome"
+    ],
+    "date_min": null,
+    "date_max": null,
+    "municipalities": 5570,
+    "file_size_mb": 0.15,
+    "plot_file": "data_imdc_2026/pre_eda/plots/environ_vars.png",
+    "notes": "One row per municipality; no time dimension."
+  },
+  {
+    "filename": "ocean_climate_oscillations.csv",
+    "description": "Weekly ocean-atmosphere oscillation indices (ENSO, IOD, PDO).",
+    "rows": 1721,
+    "columns": [
+      "date",
+      "enso",
+      "iod",
+      "pdo"
+    ],
+    "date_min": "1993-01-04",
+    "date_max": "2026-03-10",
+    "municipalities": null,
+    "file_size_mb": 0.07,
+    "plot_file": "data_imdc_2026/pre_eda/plots/ocean_climate_oscillations.png",
+    "notes": "National/global indices; join to case data by week."
+  },
+  {
+    "filename": "map_regional_health.csv",
+    "description": "Lookup table linking municipalities to health regions and macroregions.",
+    "rows": 5570,
+    "columns": [
+      "macroregion_code",
+      "macroregion_name",
+      "uf_code",
+      "uf",
+      "uf_name",
+      "macroregional_geocode",
+      "macroregional_name",
+      "regional_geocode",
+      "regional_name",
+      "geocode",
+      "geocode_name"
+    ],
+    "date_min": null,
+    "date_max": null,
+    "municipalities": 5570,
+    "file_size_mb": 0.5,
+    "plot_file": "data_imdc_2026/pre_eda/plots/map_regional_health.png",
+    "notes": "Use with shapefiles for spatial aggregation."
+  },
+  {
+    "filename": "shape_muni.gpkg",
+    "description": "GeoPackage with municipality polygons and names.",
+    "rows": 5570,
+    "columns": [
+      "geocode",
+      "geocode_name",
+      "uf",
+      "uf_code",
+      "geometry"
+    ],
+    "date_min": null,
+    "date_max": null,
+    "municipalities": 5570,
+    "file_size_mb": 24.09,
+    "plot_file": "data_imdc_2026/pre_eda/plots/shape_muni.png",
+    "notes": "Geometry layer for choropleth maps."
+  },
+  {
+    "filename": "shape_regional_health.gpkg",
+    "description": "GeoPackage with regional health division polygons.",
+    "rows": 439,
+    "columns": [
+      "regional_geocode",
+      "regional_name",
+      "uf_code",
+      "geometry"
+    ],
+    "date_min": null,
+    "date_max": null,
+    "municipalities": null,
+    "file_size_mb": 29.14,
+    "plot_file": "data_imdc_2026/pre_eda/plots/shape_regional_health.png",
+    "notes": "Matches regional_geocode in case tables."
+  },
+  {
+    "filename": "shape_macroregional_health.gpkg",
+    "description": "GeoPackage with macroregional health division polygons.",
+    "rows": 118,
+    "columns": [
+      "macroregional_geocode",
+      "macroregional_name",
+      "uf_code",
+      "geometry"
+    ],
+    "date_min": null,
+    "date_max": null,
+    "municipalities": null,
+    "file_size_mb": 44.02,
+    "plot_file": "data_imdc_2026/pre_eda/plots/shape_macroregional_health.png",
+    "notes": "Matches macroregional_geocode in case tables."
+  }
+]
