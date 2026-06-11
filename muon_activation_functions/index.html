@@ -128,6 +128,15 @@
         cursor: help;
         border-bottom: 1px dotted var(--muted);
       }
+      .markdown-body [data-glossary] {
+        cursor: help;
+        border-bottom: 1px dotted var(--muted);
+      }
+      .act-tip__caption {
+        padding: 0.15rem 0.45rem 0.3rem;
+        font-size: 0.5rem;
+        color: #5c5c5c;
+      }
     </style>
   </head>
   <body>
@@ -265,6 +274,19 @@
         /* index by id for fast lookup */
         var ACT_BY_ID = {};
         ACTIVATIONS.forEach(function (a) { ACT_BY_ID[a.id] = a; });
+
+        /* glossary terms (hover for plain-language definitions) */
+        var GLOSSARY = {
+          "non-monotonic": {
+            label: "non-monotonic",
+            text:
+              "An activation whose output does not always rise as input x increases. " +
+              "The curve can dip or bump in one region instead of climbing steadily. " +
+              "mish is a clear example; silu is smooth and gate-like but strictly monotonic.",
+            exampleActivation: "mish",
+            exampleCaption: "example: mish (small dip for negative x)"
+          }
+        };
 
         /* ── SVG curve builder ── */
         var SVG_NS = "http://www.w3.org/2000/svg";
@@ -453,6 +475,76 @@
           if (svg) wrap.appendChild(svg);
 
           return wrap;
+        }
+
+        /* ── build tooltip DOM for one glossary term ── */
+        function buildGlossaryTooltipContent(entry) {
+          var wrap = document.createElement("div");
+
+          var head = document.createElement("div");
+          head.className = "act-tip__head";
+
+          var lbl = document.createElement("span");
+          lbl.className = "act-tip__label";
+          lbl.textContent = entry.label;
+
+          head.appendChild(lbl);
+          wrap.appendChild(head);
+
+          var note = document.createElement("div");
+          note.className = "act-tip__note";
+          note.style.fontStyle = "normal";
+          note.style.paddingBottom = "0.25rem";
+          note.textContent = entry.text;
+          wrap.appendChild(note);
+
+          if (entry.exampleActivation) {
+            var act = ACT_BY_ID[entry.exampleActivation];
+            if (act) {
+              var svg = buildActivationSVG(act);
+              if (svg) wrap.appendChild(svg);
+            }
+            if (entry.exampleCaption) {
+              var caption = document.createElement("div");
+              caption.className = "act-tip__caption";
+              caption.textContent = entry.exampleCaption;
+              wrap.appendChild(caption);
+            }
+          }
+
+          return wrap;
+        }
+
+        /* ── attach Tippy tooltips to glossary spans ── */
+        function attachGlossaryTooltips(root) {
+          if (typeof tippy === "undefined") return;
+
+          var terms = root.querySelectorAll("[data-glossary]");
+          for (var i = 0; i < terms.length; i++) {
+            var el = terms[i];
+            var id = el.getAttribute("data-glossary");
+            var entry = GLOSSARY[id];
+            if (!entry) continue;
+
+            (function (element, glossaryEntry) {
+              var content = null;
+              tippy(element, {
+                theme: "act",
+                placement: "top",
+                delay: [100, 0],
+                duration: [120, 80],
+                offset: [0, 6],
+                interactive: false,
+                appendTo: document.body,
+                onShow: function (instance) {
+                  if (!content) {
+                    content = buildGlossaryTooltipContent(glossaryEntry);
+                  }
+                  instance.setContent(content);
+                }
+              });
+            })(el, entry);
+          }
         }
 
         /* ── attach Tippy tooltips to all <code> elements matching act names ── */
@@ -679,6 +771,7 @@
               enhanceOverviewTable(root);
               injectLossSection(root);
               attachActivationTooltips(root);
+              attachGlossaryTooltips(root);
               enhancePlotImages(root);
             })
             .catch(function (error) {
