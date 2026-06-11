@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Activation function sweep for a GPT-style model trained with Muon on shakespeare_char"
+    />
+    <title>Activation Function Sweep — xandykati98</title>
+    <link rel="icon" href="../logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tippy.js@6/dist/tippy.css"
+    />
+    <style>
+      /* ── tippy theme: act ── */
+      .tippy-box[data-theme~="act"] {
+        background: #fff;
+        border: 1px solid #000;
+        border-radius: 0;
+        padding: 0;
+        font-family: "IBM Plex Mono", "SF Mono", "Consolas", monospace;
+        box-shadow: none;
+        color: #1a1a1a;
+      }
+      .tippy-box[data-theme~="act"] > .tippy-arrow {
+        display: none;
+      }
+      .act-tip__head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.3rem 0.45rem;
+        border-bottom: 1px solid #e0ddd8;
+      }
+      .act-tip__label {
+        font-size: 0.6875rem;
+        font-weight: 600;
+      }
+      .act-tip__rank {
+        font-size: 0.5625rem;
+        color: #5c5c5c;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .act-tip__rank--top {
+        color: #0b57d0;
+        font-weight: 600;
+      }
+      .act-tip__note {
+        padding: 0.15rem 0.45rem 0;
+        font-size: 0.5rem;
+        color: #5c5c5c;
+        font-style: italic;
+      }
+      .act-tip__svg {
+        display: block;
+        width: 220px;
+        height: auto;
+      }
+
+      /* ── loss plot grid ── */
+      .loss-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.625rem;
+        margin: 1rem 0 1.75rem;
+      }
+      @media (max-width: 520px) {
+        .loss-grid { grid-template-columns: 1fr; }
+      }
+      .loss-card {
+        border: 1px solid var(--border);
+        background: #fff;
+        overflow: hidden;
+      }
+      .loss-card__head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 0.35rem 0.45rem;
+        border-bottom: 1px solid var(--border);
+        gap: 0.4rem;
+      }
+      .loss-card__label {
+        font-size: 0.6875rem;
+        font-weight: 600;
+      }
+      .loss-card__meta {
+        font-size: 0.5625rem;
+        color: var(--muted);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .loss-card__img {
+        display: block;
+        width: 100%;
+        height: auto;
+        cursor: zoom-in;
+      }
+      .loss-card__placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        height: 7rem;
+        font-size: 0.625rem;
+        color: var(--muted);
+        background: color-mix(in srgb, var(--fg) 3%, transparent);
+      }
+      .loss-card__placeholder-icon {
+        font-size: 1.1rem;
+        opacity: 0.3;
+      }
+
+      /* make act-name code elements feel interactive */
+      .markdown-body code[data-act] {
+        cursor: help;
+        border-bottom: 1px dotted var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <h1 class="site-title">xandykati98</h1>
+      <p class="site-tagline">
+        Activation Function Sweep —
+        <code>muon + shakespeare_char</code>
+      </p>
+    </header>
+
+    <main id="main" class="site-main">
+      <article class="markdown-body" id="markdown-root" aria-live="polite">
+        <p class="page-nav"><a href="../index.html">← home</a></p>
+        <p>Loading…</p>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        rendered from
+        <a href="./REPORT.md"><code>REPORT.md</code></a>
+      </p>
+    </footer>
+
+    <dialog id="plot-lightbox" class="plot-lightbox" aria-label="Expanded plot">
+      <img class="plot-lightbox__img" alt="" decoding="async" />
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tippy.js@6/dist/tippy.umd.min.js"></script>
+    <script>
+      (function () {
+        var MARKDOWN_PATH = "./REPORT.md";
+
+        /* ── activation function data (sorted by rank) ── */
+        var ACTIVATIONS = [
+          {
+            id: "tanh", label: "tanh", rank: 1, bestVal: "1.4679", bestStep: 3750,
+            fn: function (x) { return Math.tanh(x); }
+          },
+          {
+            id: "mish", label: "mish", rank: 2, bestVal: "1.4706", bestStep: 3000,
+            fn: function (x) { return x * Math.tanh(Math.log(1 + Math.exp(x))); }
+          },
+          {
+            id: "celu", label: "celu", rank: 3, bestVal: "1.4733", bestStep: 4750,
+            fn: function (x) { return x > 0 ? x : Math.exp(x) - 1; }
+          },
+          {
+            id: "silu", label: "silu", rank: 4, bestVal: "1.4735", bestStep: 3500,
+            fn: function (x) { return x / (1 + Math.exp(-x)); }
+          },
+          {
+            id: "elu", label: "elu", rank: 5, bestVal: "1.4740", bestStep: 3750,
+            fn: function (x) { return x >= 0 ? x : Math.exp(x) - 1; }
+          },
+          {
+            id: "hardswish", label: "hardswish", rank: 6, bestVal: "1.4784", bestStep: 3500,
+            fn: function (x) {
+              if (x <= -3) return 0;
+              if (x >= 3) return x;
+              return x * (x + 3) / 6;
+            }
+          },
+          {
+            id: "leaky_relu", label: "leaky_relu", rank: 7, bestVal: "1.4784", bestStep: 3000,
+            fn: function (x) { return x >= 0 ? x : 0.01 * x; }
+          },
+          {
+            id: "relu", label: "relu", rank: 8, bestVal: "1.4798", bestStep: 3000,
+            fn: function (x) { return Math.max(0, x); }
+          },
+          {
+            id: "gelu_tanh", label: "gelu_tanh", rank: 9, bestVal: "1.4819", bestStep: 3000,
+            fn: function (x) {
+              return 0.5 * x * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (x + 0.044715 * x * x * x)));
+            }
+          },
+          {
+            id: "quick_gelu", label: "quick_gelu", rank: 10, bestVal: "1.4820", bestStep: 3000,
+            fn: function (x) { return x / (1 + Math.exp(-1.702 * x)); }
+          },
+          {
+            id: "gelu", label: "gelu", rank: 11, bestVal: "1.4823", bestStep: 3000,
+            fn: function (x) {
+              return 0.5 * x * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (x + 0.044715 * x * x * x)));
+            }
+          },
+          {
+            id: "softplus", label: "softplus", rank: 12, bestVal: "1.4871", bestStep: 4250,
+            fn: function (x) { return Math.log(1 + Math.exp(x)); }
+          },
+          {
+            id: "prelu", label: "prelu", rank: 13, bestVal: "1.4898", bestStep: 3000,
+            note: "\u03b1 = 0.25 (init)",
+            fn: function (x) { return x >= 0 ? x : 0.25 * x; }
+          },
+          {
+            id: "selu", label: "selu", rank: 14, bestVal: "1.5004", bestStep: 4750,
+            fn: function (x) {
+              return 1.0507009873554805 * (x >= 0 ? x : 1.6732632423543772 * (Math.exp(x) - 1));
+            }
+          },
+          {
+            id: "squared_relu", label: "squared_relu", rank: 15, bestVal: "1.5102", bestStep: 2500,
+            fn: function (x) { var r = Math.max(0, x); return r * r; }
+          },
+          {
+            id: "reglu", label: "reglu", rank: 16, bestVal: "1.5332", bestStep: 2000,
+            note: "gate fn: relu(\u00b7)",
+            fn: function (x) { return Math.max(0, x); }
+          },
+          {
+            id: "geglu", label: "geglu", rank: 17, bestVal: "1.5353", bestStep: 2000,
+            note: "gate fn: gelu(\u00b7)",
+            fn: function (x) {
+              return 0.5 * x * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (x + 0.044715 * x * x * x)));
+            }
+          },
+          {
+            id: "swiglu", label: "swiglu", rank: 18, bestVal: "1.5435", bestStep: 2000,
+            note: "gate fn: silu(\u00b7)",
+            fn: function (x) { return x / (1 + Math.exp(-x)); }
+          },
+          {
+            id: "sigmoid", label: "sigmoid", rank: 19, bestVal: "1.5934", bestStep: 4750,
+            fn: function (x) { return 1 / (1 + Math.exp(-x)); }
+          }
+        ];
+
+        /* index by id for fast lookup */
+        var ACT_BY_ID = {};
+        ACTIVATIONS.forEach(function (a) { ACT_BY_ID[a.id] = a; });
+
+        /* ── SVG curve builder ── */
+        var SVG_NS = "http://www.w3.org/2000/svg";
+        var _clipSeq = 0;
+
+        function svgEl(tag, attrs) {
+          var e = document.createElementNS(SVG_NS, tag);
+          if (attrs) {
+            for (var k in attrs) {
+              if (Object.prototype.hasOwnProperty.call(attrs, k)) {
+                e.setAttribute(k, attrs[k]);
+              }
+            }
+          }
+          return e;
+        }
+
+        function buildActivationSVG(activation) {
+          var W = 220, H = 130;
+          var PAD = { top: 8, right: 8, bottom: 22, left: 28 };
+          var plotW = W - PAD.left - PAD.right;
+          var plotH = H - PAD.top - PAD.bottom;
+          var xMin = -3, xMax = 3, N = 400;
+
+          var xs = [], ys = [];
+          for (var i = 0; i <= N; i++) {
+            var xv = xMin + (xMax - xMin) * (i / N);
+            var yv;
+            try { yv = activation.fn(xv); } catch (_) { yv = null; }
+            if (yv === null || !isFinite(yv) || isNaN(yv)) yv = null;
+            xs.push(xv);
+            ys.push(yv);
+          }
+
+          var validYs = ys.filter(function (y) { return y !== null; });
+          if (validYs.length === 0) return null;
+
+          var yLo = Math.min.apply(null, validYs);
+          var yHi = Math.max.apply(null, validYs);
+          var yRange = yHi - yLo;
+          if (yRange < 0.01) { yRange = 1; yLo -= 0.5; yHi += 0.5; }
+          var yPad = yRange * 0.13;
+          yLo -= yPad; yHi += yPad;
+
+          function mx(x) { return PAD.left + (x - xMin) / (xMax - xMin) * plotW; }
+          function my(y) { return PAD.top + (yHi - y) / (yHi - yLo) * plotH; }
+
+          var clipId = "act-c" + (++_clipSeq);
+
+          var svg = svgEl("svg", {
+            viewBox: "0 0 " + W + " " + H,
+            width: W, height: H,
+            "aria-hidden": "true",
+            class: "act-tip__svg"
+          });
+
+          var defs = svgEl("defs");
+          var cp = svgEl("clipPath", { id: clipId });
+          cp.appendChild(svgEl("rect", {
+            x: PAD.left, y: PAD.top, width: plotW, height: plotH
+          }));
+          defs.appendChild(cp);
+          svg.appendChild(defs);
+
+          svg.appendChild(svgEl("rect", { width: W, height: H, fill: "#fff" }));
+          svg.appendChild(svgEl("rect", {
+            x: PAD.left, y: PAD.top, width: plotW, height: plotH,
+            fill: "#faf9f7"
+          }));
+
+          /* reference grid */
+          function hGrid(yVal, dash) {
+            if (yVal < yLo || yVal > yHi) return;
+            var attrs = {
+              x1: PAD.left, y1: my(yVal),
+              x2: PAD.left + plotW, y2: my(yVal),
+              stroke: "#e0ddd8", "stroke-width": "0.75"
+            };
+            if (dash) attrs["stroke-dasharray"] = "2,3";
+            svg.appendChild(svgEl("line", attrs));
+          }
+          function vGrid(xVal) {
+            if (xVal < xMin || xVal > xMax) return;
+            svg.appendChild(svgEl("line", {
+              x1: mx(xVal), y1: PAD.top,
+              x2: mx(xVal), y2: PAD.top + plotH,
+              stroke: "#e0ddd8", "stroke-width": "0.75"
+            }));
+          }
+
+          hGrid(0, false);
+          hGrid(1, true);
+          hGrid(-1, true);
+          vGrid(0);
+
+          svg.appendChild(svgEl("rect", {
+            x: PAD.left, y: PAD.top, width: plotW, height: plotH,
+            fill: "none", stroke: "#e0ddd8", "stroke-width": "1"
+          }));
+
+          /* curve */
+          var d = [];
+          var inSeg = false;
+          for (var j = 0; j <= N; j++) {
+            if (ys[j] === null) { inSeg = false; continue; }
+            var cx = mx(xs[j]).toFixed(2);
+            var cy = my(ys[j]).toFixed(2);
+            if (!inSeg) { d.push("M " + cx + " " + cy); inSeg = true; }
+            else { d.push("L " + cx + " " + cy); }
+          }
+          svg.appendChild(svgEl("path", {
+            d: d.join(" "),
+            fill: "none", stroke: "#0b57d0",
+            "stroke-width": "1.75",
+            "stroke-linejoin": "round", "stroke-linecap": "round",
+            "clip-path": "url(#" + clipId + ")"
+          }));
+
+          /* axis labels */
+          var FONT = '"IBM Plex Mono", monospace';
+          function yLabel(yVal, txt) {
+            if (yVal < yLo || yVal > yHi) return;
+            var ty = my(yVal);
+            svg.appendChild(svgEl("line", {
+              x1: PAD.left - 3, y1: ty, x2: PAD.left, y2: ty,
+              stroke: "#5c5c5c", "stroke-width": "0.6"
+            }));
+            var t = svgEl("text", {
+              x: PAD.left - 4, y: ty + 2.5,
+              "font-size": "7", fill: "#5c5c5c",
+              "font-family": FONT, "text-anchor": "end"
+            });
+            t.textContent = txt;
+            svg.appendChild(t);
+          }
+          yLabel(0, "0");
+          yLabel(1, "1");
+          if (yLo < -0.3) yLabel(-1, "-1");
+
+          [-3, 0, 3].forEach(function (xv) {
+            var tx = mx(xv);
+            var ty = PAD.top + plotH;
+            svg.appendChild(svgEl("line", {
+              x1: tx, y1: ty, x2: tx, y2: ty + 3,
+              stroke: "#5c5c5c", "stroke-width": "0.6"
+            }));
+            var t = svgEl("text", {
+              x: tx, y: ty + 11,
+              "font-size": "7", fill: "#5c5c5c",
+              "font-family": FONT, "text-anchor": "middle"
+            });
+            t.textContent = xv;
+            svg.appendChild(t);
+          });
+
+          return svg;
+        }
+
+        /* ── build tooltip DOM for one activation ── */
+        function buildTooltipContent(act) {
+          var wrap = document.createElement("div");
+
+          var head = document.createElement("div");
+          head.className = "act-tip__head";
+
+          var lbl = document.createElement("span");
+          lbl.className = "act-tip__label";
+          lbl.textContent = act.label;
+
+          var rank = document.createElement("span");
+          rank.className = "act-tip__rank" + (act.rank <= 5 ? " act-tip__rank--top" : "");
+          rank.textContent = "#" + act.rank + " \u00b7 best val " + act.bestVal;
+
+          head.appendChild(lbl);
+          head.appendChild(rank);
+          wrap.appendChild(head);
+
+          if (act.note) {
+            var note = document.createElement("div");
+            note.className = "act-tip__note";
+            note.textContent = act.note;
+            wrap.appendChild(note);
+          }
+
+          var svg = buildActivationSVG(act);
+          if (svg) wrap.appendChild(svg);
+
+          return wrap;
+        }
+
+        /* ── attach Tippy tooltips to all <code> elements matching act names ── */
+        function attachActivationTooltips(root) {
+          if (typeof tippy === "undefined") return;
+
+          var codes = root.querySelectorAll("code");
+          for (var i = 0; i < codes.length; i++) {
+            var el = codes[i];
+            var name = el.textContent.trim();
+            var act = ACT_BY_ID[name];
+            if (!act) continue;
+
+            el.setAttribute("data-act", name);
+
+            /* build lazily on first show to avoid 19×N SVG elements up-front */
+            (function (element, activation) {
+              var content = null;
+              tippy(element, {
+                theme: "act",
+                placement: "top",
+                delay: [100, 0],
+                duration: [120, 80],
+                offset: [0, 6],
+                interactive: false,
+                appendTo: document.body,
+                onShow: function (instance) {
+                  if (!content) {
+                    content = buildTooltipContent(activation);
+                  }
+                  instance.setContent(content);
+                }
+              });
+            })(el, act);
+          }
+        }
+
+        /* ── build loss plots section ── */
+        function buildLossSection() {
+          var section = document.createElement("div");
+
+          var h2 = document.createElement("h2");
+          h2.textContent = "Validation Loss Curves";
+          section.appendChild(h2);
+
+          var p = document.createElement("p");
+          p.textContent =
+            "Training and validation loss over 5000 steps from W\u0026B. " +
+            "Drop images into plots/ as {name}_loss.png to populate.";
+          section.appendChild(p);
+
+          var grid = document.createElement("div");
+          grid.className = "loss-grid";
+
+          ACTIVATIONS.forEach(function (act) {
+            var card = document.createElement("div");
+            card.className = "loss-card";
+
+            var head = document.createElement("div");
+            head.className = "loss-card__head";
+
+            var lbl = document.createElement("span");
+            lbl.className = "loss-card__label";
+            lbl.textContent = act.label;
+
+            var meta = document.createElement("span");
+            meta.className = "loss-card__meta";
+            meta.textContent =
+              "#" + act.rank + " \u00b7 best val " + act.bestVal + " @ step " + act.bestStep;
+
+            head.appendChild(lbl);
+            head.appendChild(meta);
+            card.appendChild(head);
+
+            var placeholder = document.createElement("div");
+            placeholder.className = "loss-card__placeholder";
+            placeholder.innerHTML =
+              '<span class="loss-card__placeholder-icon">\u25a1</span>' +
+              '<span>plots/' + act.id + "_loss.png</span>";
+
+            var img = document.createElement("img");
+            img.className = "loss-card__img";
+            img.alt = act.label + " validation loss curve";
+            img.decoding = "async";
+            img.loading = "lazy";
+            img.style.display = "none";
+
+            img.addEventListener("error", function () {
+              img.style.display = "none";
+              placeholder.style.display = "";
+            });
+            img.addEventListener("load", function () {
+              placeholder.style.display = "none";
+              img.style.display = "block";
+            });
+
+            img.src = "plots/" + act.id + "_loss.png";
+
+            card.appendChild(placeholder);
+            card.appendChild(img);
+            grid.appendChild(card);
+          });
+
+          section.appendChild(grid);
+          return section;
+        }
+
+        /* ── lightbox ── */
+        function enhancePlotImages(root) {
+          var lightbox = document.getElementById("plot-lightbox");
+          if (!lightbox) return;
+          var lightboxImage = lightbox.querySelector(".plot-lightbox__img");
+          if (!lightboxImage) return;
+
+          function openLightbox(src, alt) {
+            lightboxImage.src = src;
+            lightboxImage.alt = alt || "Expanded plot";
+            if (typeof lightbox.showModal === "function") lightbox.showModal();
+          }
+          function closeLightbox() {
+            if (!lightbox.open) return;
+            lightbox.close();
+            lightboxImage.removeAttribute("src");
+            lightboxImage.alt = "";
+          }
+
+          if (!lightbox.dataset.bound) {
+            lightbox.dataset.bound = "true";
+            lightbox.addEventListener("click", function (e) {
+              if (e.target === lightbox) closeLightbox();
+            });
+            lightboxImage.addEventListener("click", closeLightbox);
+            lightbox.addEventListener("close", function () {
+              lightboxImage.removeAttribute("src");
+              lightboxImage.alt = "";
+            });
+          }
+
+          var images = root.querySelectorAll("img");
+          for (var i = 0; i < images.length; i++) {
+            var image = images[i];
+            if (image.classList.contains("plot-lightbox__img")) continue;
+            image.tabIndex = 0;
+            (function (im) {
+              function open() {
+                if (!im.naturalWidth) return;
+                openLightbox(im.currentSrc || im.src, im.alt || "Expanded plot");
+              }
+              im.addEventListener("click", open);
+              im.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+              });
+            })(image);
+          }
+        }
+
+        /* ── overview table scroll wrapper ── */
+        function enhanceOverviewTable(root) {
+          var headings = root.querySelectorAll("h2");
+          var target = null;
+          for (var i = 0; i < headings.length; i++) {
+            if (headings[i].textContent.trim() === "Results") {
+              target = headings[i];
+              break;
+            }
+          }
+          if (!target) return;
+          var node = target.nextElementSibling;
+          while (node && node.tagName !== "TABLE") node = node.nextElementSibling;
+          if (!node || node.parentElement.classList.contains("overview-table-scroll")) return;
+          var wrapper = document.createElement("div");
+          wrapper.className = "overview-table-scroll";
+          node.parentNode.insertBefore(wrapper, node);
+          wrapper.appendChild(node);
+        }
+
+        /* ── inject loss section after results table ── */
+        function injectLossSection(root) {
+          var headings = root.querySelectorAll("h2");
+          var resultsH2 = null;
+          for (var i = 0; i < headings.length; i++) {
+            if (headings[i].textContent.trim() === "Results") {
+              resultsH2 = headings[i];
+              break;
+            }
+          }
+          if (!resultsH2) return;
+
+          var node = resultsH2.nextElementSibling;
+          while (node && node.tagName !== "TABLE") node = node.nextElementSibling;
+          if (!node) return;
+
+          var anchor = node.parentElement.classList.contains("overview-table-scroll")
+            ? node.parentElement
+            : node;
+
+          anchor.insertAdjacentElement("afterend", buildLossSection());
+        }
+
+        /* ── error ── */
+        function showError(root, message) {
+          root.innerHTML =
+            '<p class="page-nav"><a href="../index.html">\u2190 home</a></p>' +
+            '<p class="markdown-error">' + message + "</p>";
+        }
+
+        /* ── init ── */
+        function init() {
+          var root = document.getElementById("markdown-root");
+          if (!root) return;
+
+          fetch(MARKDOWN_PATH)
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error("Could not load REPORT.md (" + response.status + ")");
+              }
+              return response.text();
+            })
+            .then(function (markdown) {
+              marked.setOptions({ gfm: true, breaks: false });
+              root.innerHTML =
+                '<p class="page-nav"><a href="../index.html">\u2190 home</a></p>' +
+                marked.parse(markdown);
+              enhanceOverviewTable(root);
+              injectLossSection(root);
+              attachActivationTooltips(root);
+              enhancePlotImages(root);
+            })
+            .catch(function (error) {
+              showError(root, error instanceof Error ? error.message : String(error));
+            });
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", init);
+        } else {
+          init();
+        }
+      })();
+    </script>
+  </body>
+</html>
